@@ -3,11 +3,12 @@ package GA;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
-
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
@@ -21,11 +22,13 @@ public class GAModule {
 	private static double rate_mutation = 0.1;
 	private static double rate_cross = 0.7;
 	private static double stop_point = 0.98;
-	
+	private static double max_parent_point = 0;
 	public static void main(String []args) throws Exception {	
 		Random rn =  new Random();	
+		//RandomForest(14, 18, 20);
 		//Tìm ra 80 cặp bố mẹ tốt nhất
 		ArrayList<int[]> Parents_Array =  FindSelectionParent();
+		System.out.println("Quan the ban dau chua chon" + Parents_Array.size());
 		ArrayList<int[]> Parents_Array_Clone = (ArrayList<int[]>)Parents_Array.clone();
 		//System.out.println("So luong quan the ban dau" + Parents_Array.size());
 		ArrayList<int[]> Parent = new ArrayList<int[]>();
@@ -37,16 +40,14 @@ public class GAModule {
 		
 		//Kiem tra do dai cua gen moi
 		 for (int turn = 0; count <= 2000; turn ++ ) {
-			 //System.out.println("size quan the moi" + New_Gen.size());
-			 //System.out.println("size quan the cu clone" + Parents_Array_Clone.size());
-			
-			   while (New_Gen.size() < 10) {	 
-				// Random chon bo me
+			   while (New_Gen.size() < 80) {	 
+				// Random chon bo me		
 				 for (int i = 0; i < Parents_Array.size(); i++) {
 					    float rate_value = rn.nextFloat();	
 						// kiem tra rate_selection
 						if (rate_value < rate_cross) {
-							Parent_Clone.add(Parents_Array.get(i));							
+							Parent_Clone.add(Parents_Array.get(i));	
+							Parents_Array.remove(i);
 						}
 						if (Parent_Clone.size() == 2) {
 							Parent = Parent_Clone;
@@ -60,15 +61,20 @@ public class GAModule {
 						}
 					}
 				}	
-			 	
-			 	//Parents_Array.clear();
-			 	
-			 	//System.out.println("Size gen moi la" + New_Gen.size());
-			 	//Parents_Array = Parents_Array_Clone;
+			    Parents_Array.clear();
+			    for (int l = 0; l < Parents_Array_Clone.size(); l++) {
+			    	Parents_Array.add(Parents_Array_Clone.get(l));
+			    }
+			    FileWriter fileWriter = new FileWriter("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\src\\GA\\result_max.txt");
+			    PrintWriter printWriter = new PrintWriter(fileWriter);
 				for (int f = 0 ; f < New_Gen.size(); f++) {
 					System.out.println("Tap con duoc sinh ra " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
 					point = RandomForest(New_Gen.get(f)[0],New_Gen.get(f)[1],New_Gen.get(f)[2]);	
 					count++;
+					if (point > max_parent_point) {
+						    printWriter.printf("Tap gia tri con tot hon tim duoc la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
+						    printWriter.close();
+					}
 					if (point >= stop_point) {
 						System.out.println("Ket thuc chuong trinh");
 						System.out.println("Tap gia tri can tim la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2] );
@@ -77,15 +83,12 @@ public class GAModule {
 					}
 				}	
 				New_Gen.clear();
-				//System.out.println("size quan the cu clone sau 1 lan" + Parents_Array_Clone.size());
 		 }
 	}
 	
 	//Xay dung mo hinh Randomforest
-    private static double RandomForest(int max_features, int max_dept,  int nI_NumIterations) throws Exception {
-        BufferedReader br = null;
-        
-        
+    private static double RandomForest(int max_features, int max_dept,  int nI_NumTree) throws Exception {
+        BufferedReader br = null;  
 //        convertCSV2AARFF(
 //        		"C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.csv", 
 //        		"C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.arff");
@@ -97,23 +100,20 @@ public class GAModule {
         // setup classifier
         RandomForest rf = new RandomForest();
         rf.buildClassifier(trainData);
-        
         Random random = new Random(1); // seed = 1
         int nF_numFolds = 5;
-        //sint neS_NumExecutionSlots = 1; // n
+        //int neS_NumExecutionSlots = 1; // n
         rf.setMaxDepth(max_dept);
-        rf.setNumFeatures(max_features);
-        //rf.setBagSizePercent(85);
-        //rf.setNumTrees(nI_NumIterations);
-        rf.setNumTrees(25);
+        rf.setNumFeatures(max_features);  
+        rf.setNumTrees(nI_NumTree);
         //rf.setNumExecutionSlots(neS_NumExecutionSlots);  
         int numFolds = nF_numFolds; 
         Evaluation evaluation = new Evaluation(trainData);
         evaluation.crossValidateModel(rf, trainData, numFolds, random);
-        // System.out.println(evaluation.toClassDetailsString());
+        //System.out.println(evaluation.toClassDetailsString());
         //System.out.println(evaluation.toMatrixString());
         double fMeasure_Max_for = (evaluation.fMeasure(0) + evaluation.fMeasure(1) + evaluation.fMeasure(2) + evaluation.fMeasure(3)+ evaluation.fMeasure(4)) / 5;
-        //System.out.println("BSC-" + evaluation.fMeasure(0) + "   FKL-" + evaluation.fMeasure(1) + "    FOL-" + evaluation.fMeasure(2) + "   SDL-" + evaluation.fMeasure(3) + "   CSI-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
+        System.out.println("A01-" + evaluation.fMeasure(0) + "   A02-" + evaluation.fMeasure(1) + "    A03-" + evaluation.fMeasure(2) + "   A04-" + evaluation.fMeasure(3) + "   A05-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
         System.out.println(fMeasure_Max_for);
         return fMeasure_Max_for;
     }
@@ -121,14 +121,13 @@ public class GAModule {
     
     //Ham chon 80 cap gen bo va me    
     public static ArrayList<int[]> FindSelectionParent() throws Exception {
-    	//int count = 1;
     	Random rn = new Random();
-    	int [] arr_selection_max = new int[3];
-    	int [] arr_selection_2 = new int[3];
+    	int [] arr_selection_max = new int[3];	
     	int [] estimators = n_estimators();
     	ArrayList<int[]> arr_selections_list = new ArrayList<int[]>() ;
+    	ArrayList<int[]> arr_selections = new ArrayList<int[]>() ;
     	ArrayList<Double> arrListResult = new ArrayList<Double>();
-    	for (int count = 0; count < 12; count ++) {
+    	for (int count = 0; count < 100; count ++) {
     		int numFeature = num_feature[rn.nextInt(num_feature.length)];
     		int maxDepth = max_depth[rn.nextInt(max_depth.length)];
     		int nEstimators = estimators[rn.nextInt(estimators.length)];
@@ -140,21 +139,33 @@ public class GAModule {
     		arrListResult.add(rs);
     	}
     	for (int m = 0; m < arrListResult.size(); m++) {
-    		System.out.println("F1" + arrListResult.get(m) + " ");
+    		System.out.println("F1 " + arrListResult.get(m));
     	}
-    	for (int n = 0; n < 10; n++) {
+    	max_parent_point = FindMaxValue(arrListResult);
+    	
+    	for (int n = 0; n < 80; n++) {
     		int max_index = FindMax(arrListResult);
-    		//System.out.println("Gia tri cao nhat la" + max_index);
         	arr_selection_max = arr_selections_list.get(max_index);
+        	arr_selections.add(arr_selection_max);
         	arrListResult.remove(max_index);
     	}
-    	return arr_selections_list;	
+    	return arr_selections;	
+    }
+    
+    public static double FindMaxValue(ArrayList<Double> arr) {
+    	double Max = arr.get(0);
+    	for (int i = 1; i < arr.size(); i++) {
+    		if (arr.get(i) > Max) {
+    			Max = arr.get(i);
+    		}
+    	}
+    	return Max;
     }
     
     public static int FindMax(ArrayList<Double> arr) {
     	double Max = arr.get(0);
     	int MaxIndex = 0;
-    	for (int i = 1; i < arr.size(); i++) {
+    	for (int i = 0; i < arr.size(); i++) {
     		if (arr.get(i) > Max) {
     			Max = arr.get(i);
     			MaxIndex = i;
@@ -164,12 +175,8 @@ public class GAModule {
     }
     
     public static String CrossChildLeft(String arr_1, String  arr_2, int i) {
-//    	System.out.println("chuoi bo " + arr_1);
-//    	System.out.println("chuoi me " + arr_2);
-//    	System.out.println("vi tri hoan vi " + i);
     	String arr_child;
     	arr_child = arr_1.substring(0,i)+ arr_2.substring(i,arr_2.length());
-   // 	System.out.println("Chuoi con " + arr_child);
     	return arr_child;	
     }
     
@@ -342,7 +349,7 @@ public class GAModule {
 	public static int[] n_estimators() { 
 		int[] arr = new int[500] ;
 		for (int i = 0; i < 490; i++) {
-			arr[i] = i+10;
+			arr[i] = i + 10;
 		}
 		return arr; 
 	}
