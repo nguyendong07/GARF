@@ -13,7 +13,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 
-public class GAModule {
+public class AddFeatures {
 	private static int[] num_feature = new int[] {4,5,6,7,8};
 	private static int [] min_samples_split = new int[] {1,2,3,4,5,6,7,8,10};
 	private static int [] min_samples_leaf = new int[] {1,2,3,4,5,6,7,8,10};
@@ -25,69 +25,69 @@ public class GAModule {
 	private static double max_parent_point = 0;
 	public static void main(String []args) throws Exception {	
 		Random rn =  new Random();	
-		//RandomForest(8, 26, 20);
+		RandomForest(8, 26, 66);
 		//Tìm ra 80 cặp bố mẹ tốt nhất
-		ArrayList<int[]> Parents_Array =  FindSelectionParent();
-		System.out.println("Quan the ban dau chua chon" + Parents_Array.size());
-		ArrayList<int[]> Parents_Array_Clone = (ArrayList<int[]>)Parents_Array.clone();
-		//System.out.println("So luong quan the ban dau" + Parents_Array.size());
-		ArrayList<int[]> Parent = new ArrayList<int[]>();
-		ArrayList<int[]> Parent_Clone = new ArrayList<int[]>();		
-		ArrayList<int[]> New_Gen = new ArrayList<int[]>();
-		ArrayList<int[]> arr_child = new ArrayList<int[]>();
-		double point = 0.0;
-		int count=0;
-		
-		//Kiem tra do dai cua gen moi
-		 FileWriter fileWriter = new FileWriter("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\src\\GA\\result_max.txt");
-		 for (int turn = 0; count <= 20000; turn ++ ) {
-			 
-			   while (New_Gen.size() < 80) {	 
-				// Random chon bo me		
-				 for (int i = 0; i < Parents_Array.size(); i++) {
-					    float rate_value = rn.nextFloat();	
-						// kiem tra rate_selection
-						if (rate_value < rate_cross) {
-							Parent_Clone.add(Parents_Array.get(i));	
-							Parents_Array.remove(i);
-						}
-						if (Parent_Clone.size() == 2) {
-							Parent = Parent_Clone;
-							arr_child = CrossOverParent(Parent.get(0),Parent.get(1));
-							System.out.println("tap tham so thu nhat " + Parent.get(0)[0] + " " + Parent.get(0)[1] + " " + Parent.get(0)[2]);
-							System.out.println("tap tham so thu hai " + Parent.get(1)[0] + " " + Parent.get(1)[1] + " " + Parent.get(1)[2]);
-							Parent_Clone.clear();
-							New_Gen.add(arr_child.get(0));
-							New_Gen.add(arr_child.get(1));
-							arr_child.clear();
-						}
-					}
-				}	
-			    Parents_Array.clear();
-			    for (int l = 0; l < Parents_Array_Clone.size(); l++) {
-			    	Parents_Array.add(Parents_Array_Clone.get(l));
-			    }
-			 
-			    PrintWriter printWriter = new PrintWriter(fileWriter);
-				for (int f = 0 ; f < New_Gen.size(); f++) {
-					System.out.println("Tap con duoc sinh ra " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
-					point = RandomForest(New_Gen.get(f)[0],New_Gen.get(f)[1],New_Gen.get(f)[2]);	
-					count++;
-					if (point > max_parent_point) {
-						    printWriter.printf("Tap gia tri con tot hon tim duoc la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
-						    printWriter.printf("Gia tri f1 " + point);
-						   
-					}
-					if (point >= stop_point) {
-						System.out.println("Ket thuc chuong trinh");
-						System.out.println("Tap gia tri can tim la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2] );
-						System.out.println("F1 thu duoc" + point);
-						break;				
-					}
-				}	
-				New_Gen.clear();
-				printWriter.close();
-		 }
+//		ArrayList<int[]> Parents_Array =  FindSelectionParent();
+//		System.out.println("Quan the ban dau chua chon" + Parents_Array.size());
+//		ArrayList<int[]> Parents_Array_Clone = (ArrayList<int[]>)Parents_Array.clone();
+//		//System.out.println("So luong quan the ban dau" + Parents_Array.size());
+//		ArrayList<int[]> Parent = new ArrayList<int[]>();
+//		ArrayList<int[]> Parent_Clone = new ArrayList<int[]>();		
+//		ArrayList<int[]> New_Gen = new ArrayList<int[]>();
+//		ArrayList<int[]> arr_child = new ArrayList<int[]>();
+//		double point = 0.0;
+//		int count=0;
+//		
+//		//Kiem tra do dai cua gen moi
+//		 FileWriter fileWriter = new FileWriter("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\src\\GA\\result_max.txt");
+//		 for (int turn = 0; count <= 20000; turn ++ ) {
+//			 
+//			   while (New_Gen.size() < 80) {	 
+//				// Random chon bo me		
+//				 for (int i = 0; i < Parents_Array.size(); i++) {
+//					    float rate_value = rn.nextFloat();	
+//						// kiem tra rate_selection
+//						if (rate_value < rate_cross) {
+//							Parent_Clone.add(Parents_Array.get(i));	
+//							Parents_Array.remove(i);
+//						}
+//						if (Parent_Clone.size() == 2) {
+//							Parent = Parent_Clone;
+//							arr_child = CrossOverParent(Parent.get(0),Parent.get(1));
+//							System.out.println("tap tham so thu nhat " + Parent.get(0)[0] + " " + Parent.get(0)[1] + " " + Parent.get(0)[2]);
+//							System.out.println("tap tham so thu hai " + Parent.get(1)[0] + " " + Parent.get(1)[1] + " " + Parent.get(1)[2]);
+//							Parent_Clone.clear();
+//							New_Gen.add(arr_child.get(0));
+//							New_Gen.add(arr_child.get(1));
+//							arr_child.clear();
+//						}
+//					}
+//				}	
+//			    Parents_Array.clear();
+//			    for (int l = 0; l < Parents_Array_Clone.size(); l++) {
+//			    	Parents_Array.add(Parents_Array_Clone.get(l));
+//			    }
+//			 
+//			    PrintWriter printWriter = new PrintWriter(fileWriter);
+//				for (int f = 0 ; f < New_Gen.size(); f++) {
+//					System.out.println("Tap con duoc sinh ra " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
+//					point = RandomForest(New_Gen.get(f)[0],New_Gen.get(f)[1],New_Gen.get(f)[2]);	
+//					count++;
+//					if (point > max_parent_point) {
+//						    printWriter.printf("Tap gia tri con tot hon tim duoc la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2]);
+//						    printWriter.printf("Gia tri f1 " + point);
+//						   
+//					}
+//					if (point >= stop_point) {
+//						System.out.println("Ket thuc chuong trinh");
+//						System.out.println("Tap gia tri can tim la " + New_Gen.get(f)[0] + " " +New_Gen.get(f)[1] + " " + New_Gen.get(f)[2] );
+//						System.out.println("F1 thu duoc" + point);
+//						break;				
+//					}
+//				}	
+//				New_Gen.clear();
+//				printWriter.close();
+//		 }
 		 
 	}
 	
@@ -99,8 +99,10 @@ public class GAModule {
 //        		"C:\\Users\\dongnv\\Desktop\\acc_3_0.5_model_11_UpFall_48F.arff");
         // training file
        // br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.arff"));
-        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.arff"));
+        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\Desktop\\acc_3_0.5_model_11_UpFall_48F.arff"));
+        
         Instances trainData = new Instances(br);
+        System.out.println("Hello" + trainData.numAttributes() );
         trainData.setClassIndex(trainData.numAttributes() - 1);
         br.close();
         // setup classifier
@@ -116,8 +118,8 @@ public class GAModule {
         int numFolds = nF_numFolds; 
         Evaluation evaluation = new Evaluation(trainData);
         evaluation.crossValidateModel(rf, trainData, numFolds, random);
-        //System.out.println(evaluation.toClassDetailsString());
-        //System.out.println(evaluation.toMatrixString());
+        System.out.println(evaluation.toClassDetailsString());
+        System.out.println(evaluation.toMatrixString());
         double fMeasure_Max_for = (evaluation.fMeasure(0) + evaluation.fMeasure(1) + evaluation.fMeasure(2) + evaluation.fMeasure(3)+ evaluation.fMeasure(4)) / 5;
         System.out.println("A01-" + evaluation.fMeasure(0) + "   A02-" + evaluation.fMeasure(1) + "    A03-" + evaluation.fMeasure(2) + "   A04-" + evaluation.fMeasure(3) + "   A05-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
         System.out.println(fMeasure_Max_for);
