@@ -94,12 +94,14 @@ public class AddFeatures {
 	//Xay dung mo hinh Randomforest
     private static double RandomForest(int max_features, int max_dept,  int nI_NumTree) throws Exception {
         BufferedReader br = null;  
-//        convertCSV2AARFF(
-//        		"C:\\Users\\dongnv\\Desktop\\acc_3_0.5_model_11_UpFall_48F.csv", 
-//        		"C:\\Users\\dongnv\\Desktop\\acc_3_0.5_model_11_UpFall_48F.arff");
+
+// convertCSV2AARFF(
+// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.csv",
+// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.arff");
+
         // training file
        // br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.arff"));
-        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\Desktop\\acc_3_0.5_model_11_UpFall_48F.arff"));
+        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.arff"));
         
         Instances trainData = new Instances(br);
         System.out.println("Hello" + trainData.numAttributes() );
@@ -113,7 +115,7 @@ public class AddFeatures {
         //int neS_NumExecutionSlots = 1; // n
         rf.setMaxDepth(max_dept);
         rf.setNumFeatures(max_features);  
-        rf.setNumTrees(nI_NumTree);
+        //rf.setNumTrees(nI_NumTree);
         //rf.setNumExecutionSlots(neS_NumExecutionSlots);  
         int numFolds = nF_numFolds; 
         Evaluation evaluation = new Evaluation(trainData);
