@@ -94,14 +94,14 @@ public class AddFeatures {
 	//Xay dung mo hinh Randomforest
     private static double RandomForest(int max_features, int max_dept,  int nI_NumTree) throws Exception {
         BufferedReader br = null;  
-
+//
 // convertCSV2AARFF(
-// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.csv",
-// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.arff");
+// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_62F.csv",
+// "C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_62F.arff");
 
         // training file
        // br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\eclipse-workspace\\GARF\\FileTrain\\acc_3_0.8_model_11_UpFall_44F.arff"));
-        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_50F.arff"));
+        br = new BufferedReader(new FileReader("C:\\Users\\dongnv\\Desktop\\acc_1_0.5_model_13_UpFall_62F.arff"));
         
         Instances trainData = new Instances(br);
         System.out.println("Hello" + trainData.numAttributes() );
