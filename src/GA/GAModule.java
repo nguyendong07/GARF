@@ -21,7 +21,7 @@ public class GAModule {
 	private static int[] gens = new int[5];
 	private static double rate_mutation = 0.1;
 	private static double rate_cross = 0.7;
-	private static double stop_point = 0.98;
+	private static double stop_point = 0.999;
 	private static double max_parent_point = 0;
 	public static void main(String []args) throws Exception {	
 		Random rn =  new Random();	
@@ -91,6 +91,14 @@ public class GAModule {
 		 
 	}
 	
+	public static double TargetFunction(double arr[]) {
+		double rs = -1/5;
+		for (int  i = 0; i < arr.length ; i++) {
+			rs = rs * Math.pow((1-arr[i]),2) * Math.log(arr[i]);
+		}
+		return rs;
+	};
+	
 	//Xay dung mo hinh Randomforest
     private static double RandomForest(int max_features, int max_dept,  int nI_NumTree) throws Exception {
         BufferedReader br = null;  
@@ -119,9 +127,11 @@ public class GAModule {
         //System.out.println(evaluation.toClassDetailsString());
         //System.out.println(evaluation.toMatrixString());
         double fMeasure_Max_for = (evaluation.fMeasure(0) + evaluation.fMeasure(1) + evaluation.fMeasure(2) + evaluation.fMeasure(3)+ evaluation.fMeasure(4)) / 5;
+        double []targer_arr = {evaluation.fMeasure(0), evaluation.fMeasure(1), evaluation.fMeasure(2), evaluation.fMeasure(3), evaluation.fMeasure(4)};
+        double result_target = TargetFunction(targer_arr); 
         System.out.println("A01-" + evaluation.fMeasure(0) + "   A02-" + evaluation.fMeasure(1) + "    A03-" + evaluation.fMeasure(2) + "   A04-" + evaluation.fMeasure(3) + "   A05-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
-        System.out.println(fMeasure_Max_for);
-        return fMeasure_Max_for;
+        System.out.println("Target result" + result_target);
+        return result_target;
     }
 
     
