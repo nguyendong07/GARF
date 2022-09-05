@@ -119,18 +119,20 @@ public class GAModule {
         //int neS_NumExecutionSlots = 1; // n
         rf.setMaxDepth(max_dept);
         rf.setNumFeatures(max_features);  
-        rf.setNumTrees(nI_NumTree);
+        //rf.setNumTrees(nI_NumTree);
         //rf.setNumExecutionSlots(neS_NumExecutionSlots);  
         int numFolds = nF_numFolds; 
         Evaluation evaluation = new Evaluation(trainData);
         evaluation.crossValidateModel(rf, trainData, numFolds, random);
-        //System.out.println(evaluation.toClassDetailsString());
-        //System.out.println(evaluation.toMatrixString());
+        System.out.println(evaluation.toClassDetailsString());
+        System.out.println(evaluation.toMatrixString());
         double fMeasure_Max_for = (evaluation.fMeasure(0) + evaluation.fMeasure(1) + evaluation.fMeasure(2) + evaluation.fMeasure(3)+ evaluation.fMeasure(4)) / 5;
         double []targer_arr = {evaluation.fMeasure(0), evaluation.fMeasure(1), evaluation.fMeasure(2), evaluation.fMeasure(3), evaluation.fMeasure(4)};
         double result_target = TargetFunction(targer_arr); 
-        System.out.println("A01-" + evaluation.fMeasure(0) + "   A02-" + evaluation.fMeasure(1) + "    A03-" + evaluation.fMeasure(2) + "   A04-" + evaluation.fMeasure(3) + "   A05-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
-        System.out.println("Target result" + result_target);
+        System.out.println("A01-" +evaluation.fMeasure(0)  + "   A02-" + evaluation.fMeasure(1) + "    A03-" + evaluation.fMeasure(2) + "   A04-" + evaluation.fMeasure(3) + "   A05-" + evaluation.fMeasure(4) + "    all-" + evaluation.weightedFMeasure());
+        for(int i = 0; i < 11; i++) {
+        	System.out.println("MCC value of Activity"+ i + evaluation.matthewsCorrelationCoefficient(i) );
+        }
         return result_target;
     }
 
